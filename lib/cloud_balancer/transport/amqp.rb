@@ -1,6 +1,6 @@
 module CloudBalancer
   module Transport
-    class AMQP < Base
+    class AMQP
 
     end
   end
