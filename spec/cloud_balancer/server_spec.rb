@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe CloudBalancer::Server do
-  
+
   context "Communication to the nodes" do
 
     it "connects to a message queue server on start" do
