@@ -8,10 +8,12 @@ module CloudBalancer
     attr_reader :services
 
     def initialize()
-      # TODO: load services from config
-      @services = { :www => { :nodes => [] } }
-      # TODO: load password from config
-      @config = { :cluster_password => "testpass" }
+      @config = CloudBalancer::Config.server
+
+      @services = {}
+      @config.services.each do |service|
+        @services[service] = { :nodes => [] }
+      end
     end
 
     # Starting point for a new message
@@ -57,7 +59,7 @@ module CloudBalancer
     #
     def register_node(service, node, password)
       service = service.to_sym
-      if password == @config[:cluster_password]
+      if password == @config.cluster_password
         raise UnknownService, "I cannot add a node to service '#{service}' as I don't know this service" unless @services.has_key?(service)
         unless @services[service][:nodes].find { |registered_node| registered_node[:name] == node }
           @services[service][:nodes] << { :name => node, :weight => 0 }
@@ -65,7 +67,7 @@ module CloudBalancer
           # puts "Node is already registered"
         end
       else
-        # puts "Password was wrong"
+        # puts "Password was wrong (#{password}/#{@config.cluster_password})"
       end
     end
 
