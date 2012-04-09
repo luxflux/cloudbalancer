@@ -7,5 +7,6 @@ gem 'active_support', :require => "active_support/core_ext/string/inflections"
 
 group :development do
   gem 'rspec'
-  gem 'em-spec'
+  gem 'evented-spec'
+  gem 'mocha'
 end
