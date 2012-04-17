@@ -10,6 +10,7 @@ module CloudBalancer
 
     def run!
       @worker = "CloudBalancer::Transport::#{@protocol.to_s.camelize}".constantize.new
+      @worker.consumer = "CloudBalancer::#{CloudBalancer::Config.daemon.to_s.camelize}".constantize.new
     end
 
   end

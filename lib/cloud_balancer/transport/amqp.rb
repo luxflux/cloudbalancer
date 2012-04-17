@@ -3,13 +3,12 @@ module CloudBalancer
     class AMQP
 
       attr_reader :queue_name, :channel, :consumer
+      attr_writer :consumer
 
       def initialize
         connection = ::AMQP.connect(:host => CloudBalancer::Config.amqp.host)
-        
+
         @channel = ::AMQP::Channel.new(connection)
-        
-        @consumer = "CloudBalancer::#{CloudBalancer::Config.daemon.to_s.camelize}".constantize.new
       end
 
       def start
