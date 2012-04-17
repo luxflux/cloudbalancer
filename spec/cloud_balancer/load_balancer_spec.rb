@@ -15,11 +15,7 @@ describe CloudBalancer::LoadBalancer do
       end
 
       let(:metadata) do
-        o = OpenStruct.new
-
-        o.content_type = "application/json"
-        o.type = "register"
-        o
+        { topic: "register" }
       end
 
       let(:register_payload) do
