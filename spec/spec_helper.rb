@@ -22,6 +22,6 @@ end
 CloudBalancer::Config.cluster_password = "testpass"
 CloudBalancer::Config.server.services = [ :www ]
 CloudBalancer::Config.amqp.host = "localhost"
-CloudBalancer::Config.daemon = :server
+CloudBalancer::Config.daemon = :load_balancer
 CloudBalancer::Config.protocol = :AMQP
 

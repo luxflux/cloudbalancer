@@ -1,5 +1,5 @@
 module CloudBalancer
-  class Server
+  class LoadBalancer
 
     class UnknownMessageType < RuntimeError; end
     class MessageTypeNotSpecified < RuntimeError; end
@@ -39,7 +39,7 @@ module CloudBalancer
     private
 
     # Parse the received payload
-    # 
+    #
     # @param [String] content_type The content type of payload
     # @param [String] payload The payload to parse
     #

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CloudBalancer::Server do
+describe CloudBalancer::LoadBalancer do
 
   context "Communication to the nodes" do
 
@@ -11,7 +11,7 @@ describe CloudBalancer::Server do
     context "announcement" do
 
       subject do
-        CloudBalancer::Server.new
+        CloudBalancer::LoadBalancer.new
       end
 
       let(:metadata) do

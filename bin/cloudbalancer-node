@@ -12,5 +12,5 @@ require 'cloud_balancer'
 
 EM.run do
   runner = CloudBalancer::Runner.new
-  runner.run!
+  runner.run!(:node)
 end
