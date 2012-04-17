@@ -23,7 +23,7 @@ describe CloudBalancer::LoadBalancer do
       end
 
       let(:register_payload) do
-        { "queue" => "testnode1", "password" => "testpass", "service" => "www" }.to_json
+        { "queue" => "testnode1", "password" => "testpass", "services" => [ "www", "smtp" ] }.to_json
       end
 
       it "adds the node to the setup" do

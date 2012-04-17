@@ -4,5 +4,8 @@ module CloudBalancer
   autoload :Config, 'cloud_balancer/config'
   autoload :Transport, 'cloud_balancer/transport'
   autoload :Runner, 'cloud_balancer/runner'
+  autoload :Node, 'cloud_balancer/node'
+
+  autoload :Logger, 'cloud_balancer/logger'
 
 end
