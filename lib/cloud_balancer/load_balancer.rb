@@ -1,7 +1,8 @@
 module CloudBalancer
   class LoadBalancer
 
-    attr_reader :services
+    attr_reader :services, :topics, :logger
+    attr_accessor :transport
 
     def initialize()
       @config = CloudBalancer::Config.load_balancer
@@ -13,6 +14,15 @@ module CloudBalancer
 
       @logger = CloudBalancer::Logger.new.logger
 
+      @topics = [
+        :register
+      ]
+
+    end
+
+    # Starts the Loadbalancing
+    def start
+
     end
 
     # Starting point for a new message
@@ -21,34 +31,26 @@ module CloudBalancer
     # @param [String] payload The message content
     #
     def handle_message(metadata, payload)
-      message = parse_payload(metadata.content_type, payload)
-      if metadata.type
-        case metadata.type.to_sym
-        when :register
-          message[:services].each do |service|
-            register_node(service, message[:node], message[:password])
+      begin
+        if metadata[:topic]
+          case metadata[:topic].to_sym
+          when :register
+            payload[:services].each do |service|
+              register_node(service, payload[:node], payload[:password])
+            end
+          else
+            @logger.error "I don't know how to handle message of type #{metadata[:topic]} (Content: #{payload})."
           end
         else
-          @logger.error "I don't know how to handle message of type #{metadata.type} (Content: #{message})."
+          @logger.error "I don't know how to handle this message (#{payload}), no message type specified."
         end
-      else
-        @logger.error "I don't know how to handle this message (#{message}), no message type specified."
+      rescue => e
+        @logger.fatal e
       end
     end
 
 
     private
-
-    # Parse the received payload
-    #
-    # @param [String] content_type The content type of payload
-    # @param [String] payload The payload to parse
-    #
-    # @return [Hash] The parsed content of payload
-    #
-    def parse_payload(content_type, payload)
-      JSON.parse(payload, :symbolize_names => true)
-    end
 
     # Register a node to a service
     #
