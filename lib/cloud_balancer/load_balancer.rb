@@ -15,7 +15,8 @@ module CloudBalancer
       @logger = CloudBalancer::Logger.new.logger
 
       @topics = [
-        :register
+        :register,
+        :status
       ]
 
     end
@@ -31,21 +32,30 @@ module CloudBalancer
     # @param [String] payload The message content
     #
     def handle_message(metadata, payload)
+
+      puts metadata.inspect
       begin
         if metadata[:topic]
+
           case metadata[:topic].to_sym
           when :register
             payload[:services].each do |service|
               register_node(service, payload[:node], payload[:password])
             end
+          when :status
+            reply_status(metadata[:reply_to], metadata[:message_id])
           else
             @logger.error "I don't know how to handle message of type #{metadata[:topic]} (Content: #{payload})."
+            false
           end
+
         else
           @logger.error "I don't know how to handle this message (#{payload}), no message type specified."
+          false
         end
       rescue => e
         @logger.fatal e
+        false
       end
     end
 
@@ -80,6 +90,10 @@ module CloudBalancer
       else
         @logger.error "Password was wrong (#{password}/#{@config.cluster_password})"
       end
+    end
+
+    def reply_status(to, id)
+      @transport.reply(to, id, {services: @services})
     end
 
   end
