@@ -20,6 +20,10 @@ module CloudBalancer
       def publish(topic, data)
         routing_key = get_routing_key_for_topic(topic)
         @exchange.publish(data.to_json, { type: topic.to_s, routing_key: routing_key })
+        return true
+      rescue => e
+        @consumer.logger.error "Publish failed: #{e}"
+        return false
       end
 
       def handle_message(metadata, payload)
