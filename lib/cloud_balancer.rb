@@ -7,5 +7,6 @@ module CloudBalancer
   autoload :Node, 'cloud_balancer/node'
 
   autoload :Logger, 'cloud_balancer/logger'
+  autoload :Status, 'cloud_balancer/status'
 
 end
