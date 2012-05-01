@@ -8,9 +8,9 @@ module CloudBalancer
       attr_writer :consumer
 
       def initialize
-        connection = ::AMQP.connect(:host => CloudBalancer::Config.amqp.host)
+        @connection = ::AMQP.connect(:host => CloudBalancer::Config.amqp.host)
 
-        @channel = ::AMQP::Channel.new(connection)
+        @channel = ::AMQP::Channel.new(@connection)
         @queue_name = Socket.gethostname + Kernel.rand(101010).to_s
       end
 
@@ -57,6 +57,10 @@ module CloudBalancer
         }
         @consumer.logger.debug "Got message (#{metadata.inspect} / #{payload.inspect})"
         @consumer.handle_message(metadata, payload)
+      end
+
+      def close
+        @connection.close
       end
 
       protected
