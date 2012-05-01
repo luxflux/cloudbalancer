@@ -17,7 +17,7 @@ class CloudBalancer::LoadBalancer
     end
 
     def to_s
-      name
+      "#{name}"
     end
 
   end
