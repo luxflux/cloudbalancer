@@ -1,3 +1,5 @@
+require 'socket'
+
 module CloudBalancer
   class Node
 
@@ -17,7 +19,8 @@ module CloudBalancer
     def register_with_loadbalancer
       register = {
         password: @config.cluster_password,
-        services: @config.services
+        services: @config.services,
+        node: Socket.gethostname
       }
       publish(:register, register)
     end
