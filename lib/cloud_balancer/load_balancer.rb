@@ -23,7 +23,7 @@ module CloudBalancer
 
     # Starts the Loadbalancing
     def start
-
+      start_heartbeat_check
     end
 
     # Starting point for a new message
@@ -80,7 +80,7 @@ module CloudBalancer
 
         else
           unless @services[service][:nodes].find { |registered_node| registered_node[:name] == node }
-            @services[service][:nodes] << { :name => node, :weight => 0 }
+            @services[service][:nodes] << { name: node, weight: 0, last_heartbeat: Time.now }
             @logger.info "Node #{node} added to service #{service}"
           else
             @logger.error "Node is already registered"
@@ -94,6 +94,19 @@ module CloudBalancer
 
     def reply_status(to, id)
       @transport.reply(to, id, {services: @services})
+    end
+
+    def start_heartbeat_check
+      EM::PeriodicTimer.new(0.5) do
+        @services.each do |service,value|
+          puts "checking service #{service}"
+          puts value.inspect
+          value[:nodes].delete_if do |node|
+            puts "checking heartbeat of #{node}"
+            node[:last_heartbeat].nil? or node[:last_heartbeat] < Time.now - 3.seconds
+          end
+        end
+      end
     end
 
   end
