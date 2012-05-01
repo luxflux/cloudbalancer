@@ -1,3 +1,5 @@
+require 'socket'
+
 module CloudBalancer
   module Transport
     class AMQP
@@ -9,6 +11,7 @@ module CloudBalancer
         connection = ::AMQP.connect(:host => CloudBalancer::Config.amqp.host)
 
         @channel = ::AMQP::Channel.new(connection)
+        @queue_name = Socket.gethostname
       end
 
       def start
@@ -27,7 +30,7 @@ module CloudBalancer
       end
 
       def question(topic)
-        publish(topic, {}, message_id: Kernel.rand(10101010).to_s, reply_to: @queue_name)
+        publish(topic, {}, {message_id: Kernel.rand(10101010).to_s, reply_to: @queue_name})
       end
 
       def reply(to, id, data)
@@ -40,9 +43,9 @@ module CloudBalancer
                                           immediate: true,
                                           mandatory: true)
         return true
-      #rescue => e
-      #  @consumer.logger.error "Reply failed: #{e}"
-      #  return false
+      rescue => e
+        @consumer.logger.error "Reply failed: #{e}"
+        return false
       end
 
       def handle_message(metadata, payload)
@@ -63,8 +66,7 @@ module CloudBalancer
       end
 
       def start_queue
-        @queue = @channel.queue("", :exclusive => true, :auto_delete => true) do |queue|
-          @queue_name = queue.name
+        @queue = @channel.queue(@queue_name, :exclusive => true, :auto_delete => true) do |queue|
           queue.subscribe(&self.method(:handle_message))
           start_listen_on_topics(queue)
         end
