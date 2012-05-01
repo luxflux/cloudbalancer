@@ -1,10 +1,11 @@
 class CloudBalancer::LoadBalancer
-  ServiceNode = Struct.new :name, :weight, :last_heartbeat do
+  ServiceNode = Struct.new :name, :weight, :last_heartbeat, :online do
+
+    include CloudBalancer::LoadBalancer::ToJsonMixin
 
     attr_writer :online
 
-    def initialize(name, weight = 0, last_heartbeat = Time.now)
-      @disabled = false
+    def initialize(name, weight = 0, last_heartbeat = Time.now, online = false)
       super
     end
 

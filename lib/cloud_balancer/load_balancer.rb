@@ -2,6 +2,7 @@ module CloudBalancer
   class LoadBalancer
 
     autoload :FindNameMixin, 'cloud_balancer/load_balancer/find_name_mixin'
+    autoload :ToJsonMixin, 'cloud_balancer/load_balancer/to_json_mixin'
     autoload :Services, 'cloud_balancer/load_balancer/services'
     autoload :Service, 'cloud_balancer/load_balancer/service'
     autoload :ServiceNodes, 'cloud_balancer/load_balancer/service_nodes'

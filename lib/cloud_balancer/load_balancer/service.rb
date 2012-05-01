@@ -1,6 +1,8 @@
 class CloudBalancer::LoadBalancer
   Service = Struct.new :name, :nodes do
 
+    include CloudBalancer::LoadBalancer::ToJsonMixin
+
     def initialize(name, nodes = ServiceNodes.new)
       super
     end
