@@ -8,15 +8,16 @@ module CloudBalancer
       @protocol = CloudBalancer::Config.protocol
     end
 
-    def run!(mode = :auto)
+    def run!(mode = :auto, &block)
       @worker = "CloudBalancer::Transport::#{@protocol.to_s.camelize}".constantize.new
-      consumer = (mode == :auto ? CloudBalancer::Config.daemon : mode).to_s.camelize
-      if consumer == "Status"
-        run_once = true
-        @worker.consumer = "CloudBalancer::#{consumer}".constantize.new(run_once)
+      consumer = "CloudBalancer::#{(mode == :auto ? CloudBalancer::Config.daemon : mode).to_s.camelize}".constantize
+
+      if block
+        @worker.consumer = consumer.new(block)
       else
-        @worker.consumer = "CloudBalancer::#{consumer}".constantize.new
+        @worker.consumer = consumer.new
       end
+
       @worker.consumer.transport = @worker
 
       @worker.start
