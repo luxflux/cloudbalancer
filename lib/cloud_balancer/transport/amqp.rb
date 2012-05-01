@@ -11,12 +11,12 @@ module CloudBalancer
         connection = ::AMQP.connect(:host => CloudBalancer::Config.amqp.host)
 
         @channel = ::AMQP::Channel.new(connection)
-        @queue_name = Socket.gethostname
+        @queue_name = Socket.gethostname + Kernel.rand(101010).to_s
       end
 
       def start
-        start_queue
         start_exchange
+        start_queue
       end
 
       def publish(topic, data = {}, headers = {})
