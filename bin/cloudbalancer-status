@@ -12,7 +12,8 @@ require 'cloud_balancer'
 
 EM.run do
   runner = CloudBalancer::Runner.new
-  runner.run!(:status) do
-    puts "should be after fetching data"
+  block = lambda { close }
+  runner.run!(:status) do |consumer|
+    consumer.close
   end
 end
