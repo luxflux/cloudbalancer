@@ -16,7 +16,7 @@ module CloudBalancer
 
     def handle_message(metadata, payload)
       @logger.info("Got message: #{metadata.inspect} - #{payload.inspect}")
-      @callback.call
+      @callback.call(self)
     end
 
     def close
