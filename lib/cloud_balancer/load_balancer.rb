@@ -7,6 +7,8 @@ module CloudBalancer
     autoload :Service, 'cloud_balancer/load_balancer/service'
     autoload :ServiceNodes, 'cloud_balancer/load_balancer/service_nodes'
     autoload :ServiceNode, 'cloud_balancer/load_balancer/service_node'
+    autoload :TCPServer, 'cloud_balancer/load_balancer/tcp_server'
+    autoload :Algorithms, 'cloud_balancer/load_balancer/algorithms'
 
     attr_reader :services, :topics, :logger
     attr_accessor :transport
