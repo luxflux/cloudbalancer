@@ -1,5 +1,5 @@
 configatron.cluster_password = ""
-configatron.services = [ :www ]
+configatron.services = [ { name: 'www', ip: "0.0.0.0", port: "8080", node_port: 3000 }  ]
 configatron.amqp.host = 'localhost'
 configatron.daemon = :load_balancer
 configatron.protocol = :AMQP

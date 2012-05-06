@@ -21,8 +21,8 @@ module CloudBalancer
     def register_with_loadbalancer
       register = {
         password: @config.cluster_password,
-        services: @config.services,
-        node: @name
+        services: reg_services,
+        node: @name,
       }
       publish(:register, register)
     end
@@ -39,8 +39,20 @@ module CloudBalancer
 
     def start_heartbeat
       EM::PeriodicTimer.new(1) do
-        publish(:heartbeat, node: @name, services: @config.services)
+        publish(:heartbeat, node: @name, services: services_array)
       end
+    end
+
+    def services_array
+      @config.services.map { |s| s[:name] }
+    end
+
+    def reg_services
+      services = {}
+      @config.services.each do |s|
+        services[s[:name]] = s[:node_port]
+      end
+      services
     end
 
   end
