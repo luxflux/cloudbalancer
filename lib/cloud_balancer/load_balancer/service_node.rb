@@ -5,7 +5,7 @@ class CloudBalancer::LoadBalancer
 
     attr_writer :online
 
-    def initialize(name, port, weight = 0, last_heartbeat = Time.now, online = false)
+    def initialize(name, port, weight = 10, last_heartbeat = Time.now, online = false)
       super
     end
 

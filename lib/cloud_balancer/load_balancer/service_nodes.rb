@@ -4,7 +4,7 @@ class CloudBalancer::LoadBalancer
     include CloudBalancer::LoadBalancer::FindNameMixin
 
     def weights
-      self.map { |server| server[:weight] }
+      self.map { |server| server.weight }
     end
 
     def gcd
