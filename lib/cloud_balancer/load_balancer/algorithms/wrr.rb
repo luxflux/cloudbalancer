@@ -22,7 +22,7 @@ module CloudBalancer::LoadBalancer::Algorithms
       @last_backend = (@last_backend + 1) % @nodes.length
 
       if @last_backend == 0
-        puts @nodes.gcd
+        puts "#{@current_weight} - #{@nodes.gcd}"
         @current_weight = @current_weight - @nodes.gcd
         if @current_weight <= 0
           @current_weight = @nodes.max
@@ -33,7 +33,7 @@ module CloudBalancer::LoadBalancer::Algorithms
       end
 
       if @nodes[@last_backend][:weight] >= @current_weight
-        @backend = @nodes[i]
+        @backend = @nodes[@last_backend]
       end
 
     end

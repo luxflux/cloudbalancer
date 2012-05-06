@@ -20,7 +20,7 @@ class CloudBalancer::LoadBalancer
     end
 
     def open_backend_connection
-      @backend_connection = EM.connect @backend.name, @backend.port, TCPClient, self
+      @backend_connection = EM.connect @backend.name, @backend.port, CloudBalancer::LoadBalancer::TCPClient, self
     end
 
   end

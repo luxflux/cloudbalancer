@@ -8,6 +8,7 @@ module CloudBalancer
     autoload :ServiceNodes, 'cloud_balancer/load_balancer/service_nodes'
     autoload :ServiceNode, 'cloud_balancer/load_balancer/service_node'
     autoload :TCPServer, 'cloud_balancer/load_balancer/tcp_server'
+    autoload :TCPClient, 'cloud_balancer/load_balancer/tcp_client'
     autoload :Algorithms, 'cloud_balancer/load_balancer/algorithms'
     autoload :GCD, 'cloud_balancer/load_balancer/gcd'
 
