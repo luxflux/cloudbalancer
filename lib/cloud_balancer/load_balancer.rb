@@ -9,6 +9,7 @@ module CloudBalancer
     autoload :ServiceNode, 'cloud_balancer/load_balancer/service_node'
     autoload :TCPServer, 'cloud_balancer/load_balancer/tcp_server'
     autoload :Algorithms, 'cloud_balancer/load_balancer/algorithms'
+    autoload :GCD, 'cloud_balancer/load_balancer/gcd'
 
     attr_reader :services, :topics, :logger
     attr_accessor :transport
@@ -18,7 +19,7 @@ module CloudBalancer
 
       @services = Services.new
       @config.services.each do |service|
-        @services << Service.new(service)
+        @services << Service.new(service[:name], service[:ip], service[:port])
       end
 
       @logger = CloudBalancer::Logger.new.logger
@@ -34,6 +35,7 @@ module CloudBalancer
     # Starts the Loadbalancing
     def start
       start_heartbeat_check
+      start_loadbalancing
     end
 
     # Starting point for a new message
@@ -49,8 +51,8 @@ module CloudBalancer
 
           case metadata[:topic].to_sym
           when :register
-            payload[:services].each do |service|
-              register_node(service, payload[:node], payload[:password])
+            payload[:services].each do |service,port|
+              register_node(service, port, payload[:node], payload[:password])
             end
 
           when :status
@@ -80,13 +82,15 @@ module CloudBalancer
     # Register a node to a service
     #
     # @param [Symbol,String] service The service where the node should be assigned
+    # @param [Number] port The port on the node for this service
     # @param [String] node The node which should be assigned
     # @param [String] password The password to join this cluster
     #
     # @return [Boolean] The status whether it worked out
     #
-    def register_node(service, node, password)
+    def register_node(service, port, node, password)
       service = service.to_sym
+      port = port.to_i
 
       if password == @config.cluster_password
 
@@ -95,8 +99,8 @@ module CloudBalancer
 
         else
           unless my_service.nodes.find_name(node)
-            my_service.nodes << ServiceNode.new(node)
-            @logger.info "Node #{node} added to service #{service}"
+            my_service.nodes << ServiceNode.new(node, port)
+            @logger.info "Node #{node}:#{port} added to service #{service}"
           else
             @logger.error "Node is already registered (#{my_service.nodes.find_name(node)}"
           end
@@ -146,7 +150,13 @@ module CloudBalancer
       EM::PeriodicTimer.new(0.5) do
         heartbeat_check
       end
+    end
 
+    def start_loadbalancing
+      @services.each do |service|
+        @logger.info "Starting service #{service.name} on #{service.ip}:#{service.port}"
+        EM.start_server service.ip, service.port, TCPServer, service
+      end
     end
 
   end
