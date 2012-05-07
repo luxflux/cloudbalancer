@@ -10,7 +10,6 @@ module CloudBalancer::LoadBalancer::Algorithms
     def run_algorithm
       @last_backend ||= -1
       @current_weight ||= 0
-      @backend = nil
       begin
         algo
       rescue ErrorInCalculation
@@ -19,10 +18,9 @@ module CloudBalancer::LoadBalancer::Algorithms
     end
 
     def algo
-      @last_backend = (@last_backend + 1) % @nodes.length
+      @new_backend = (@last_backend + 1) % @nodes.length
 
-      if @last_backend == 0
-        puts "#{@current_weight} - #{@nodes.gcd}"
+      if @new_backend == 0
         @current_weight = @current_weight - @nodes.gcd
         if @current_weight <= 0
           @current_weight = @nodes.max
@@ -32,8 +30,8 @@ module CloudBalancer::LoadBalancer::Algorithms
         end
       end
 
-      if @nodes[@last_backend][:weight] >= @current_weight
-        @backend = @nodes[@last_backend]
+      if @nodes[@new_backend][:weight] >= @current_weight
+        self.backend = @new_backend
       end
 
     end
