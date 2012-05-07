@@ -4,8 +4,8 @@ module CloudBalancer
   module Transport
     class AMQP
 
-      attr_reader :queue_name, :channel, :consumer
-      attr_writer :consumer
+      attr_reader :queue_name, :channel, :daemon
+      attr_writer :daemon
 
       def initialize
         @connection = ::AMQP.connect(:host => CloudBalancer::Config.amqp.host)
@@ -25,7 +25,7 @@ module CloudBalancer
         @exchange.publish(data.to_json, headers)
         return true
       rescue => e
-        @consumer.logger.error "Publish failed: #{e}"
+        @daemon.logger.error "Publish failed: #{e}"
         return false
       end
 
@@ -41,7 +41,7 @@ module CloudBalancer
                                           mandatory: true)
         return true
       rescue => e
-        @consumer.logger.error "Reply failed: #{e}"
+        @daemon.logger.error "Reply failed: #{e}"
         return false
       end
 
@@ -52,8 +52,8 @@ module CloudBalancer
           reply_to: metadata.reply_to,
           message_id: metadata.message_id
         }
-        @consumer.logger.debug "Got message (#{metadata.inspect} / #{payload.inspect})"
-        @consumer.handle_message(metadata, payload)
+        @daemon.logger.debug "Got message (#{metadata.inspect} / #{payload.inspect})"
+        @daemon.handle_message(metadata, payload)
       end
 
       def close
@@ -78,11 +78,11 @@ module CloudBalancer
       end
 
       def start_listen_on_topics(queue)
-        if @consumer.respond_to?(:topics)
-          @consumer.topics.each do |topic|
+        if @daemon.respond_to?(:topics)
+          @daemon.topics.each do |topic|
             t = get_routing_key_for_topic(topic)
             queue.bind(@exchange, :routing_key => t)
-            @consumer.logger.info "Started listening on #{topic} (routing_key: #{t})"
+            @daemon.logger.info "Started listening on #{topic} (routing_key: #{t})"
           end
         end
       end

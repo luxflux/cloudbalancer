@@ -9,7 +9,7 @@ describe CloudBalancer::Transport::AMQP do
     l
   end
 
-  let(:consumer) do
+  let(:daemon) do
     OpenStruct.new(logger: logger)
   end
 
@@ -20,7 +20,7 @@ describe CloudBalancer::Transport::AMQP do
 
     subject do
       amqp = CloudBalancer::Transport::AMQP.new
-      amqp.consumer = consumer
+      amqp.daemon = daemon
       amqp.start
       amqp
     end

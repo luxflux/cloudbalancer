@@ -3,7 +3,7 @@ module CloudBalancer
 
     attr_accessor :transport, :logger
 
-    def initialize(block)
+    def initialize(&block)
       @config = CloudBalancer::Config.status
       @logger = CloudBalancer::Logger.new.logger
 
@@ -16,7 +16,7 @@ module CloudBalancer
 
     def handle_message(metadata, payload)
       @logger.info("Got message: #{metadata.inspect} - #{payload.inspect}")
-      @callback.call(self)
+      @callback.call(self) if @callback
     end
 
     def close

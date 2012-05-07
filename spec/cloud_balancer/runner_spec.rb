@@ -2,11 +2,22 @@ require 'spec_helper'
 
 describe CloudBalancer::Runner do
 
-  it "should instantiate a worker of the defined protocol" do
+  before do
     mock_amqp_connect
-    runner = CloudBalancer::Runner.new
-    runner.run!
-    runner.worker.should be_instance_of(CloudBalancer::Transport::AMQP)
+
+    daemon = mock()
+    daemon.expects(:transport=)
+    daemon.expects(:start)
+
+    transport = mock()
+    transport.expects(:daemon=)
+    transport.expects(:start)
+
+    @runner = CloudBalancer::Runner.new(daemon, transport)
+  end
+
+  it "assigns the daemon and the transport" do
+    @runner.run.should be_true
   end
 
 end
