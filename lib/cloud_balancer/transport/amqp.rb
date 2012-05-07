@@ -34,9 +34,6 @@ module CloudBalancer
       end
 
       def reply(to, id, data)
-        puts to
-        puts id
-        puts data.to_json
         @channel.default_exchange.publish(data.to_json,
                                           routing_key: to,
                                           correlation_id: id,
