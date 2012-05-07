@@ -1,9 +1,9 @@
 class CloudBalancer::LoadBalancer
-  Service = Struct.new :name, :ip, :port, :nodes, :last_backend, :current_weight do
+  Service = Struct.new :name, :ip, :port, :nodes, :algo_options do
 
     include CloudBalancer::LoadBalancer::ToJsonMixin
 
-    def initialize(name, ip, port, nodes = ServiceNodes.new, last_backend = nil, current_weight = nil)
+    def initialize(name, ip, port, nodes = ServiceNodes.new, algo_options = nil)
       name = name.to_sym
       super
     end

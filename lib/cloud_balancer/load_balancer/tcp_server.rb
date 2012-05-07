@@ -2,16 +2,11 @@ class CloudBalancer::LoadBalancer
 
   module TCPServer
 
-    include CloudBalancer::LoadBalancer::Algorithms::WRR
-
-    def initialize(service)
-      super
+    def post_init(service)
       @service = service
       @nodes = service.nodes
       @port = service.port
-      @last_backend = service.last_backend
-      @current_weight = service.current_weight
-      self.backend = nil
+      @algorithm = service.algorithm
       select_backend
       open_backend_connection
     end
@@ -20,18 +15,20 @@ class CloudBalancer::LoadBalancer
       @backend_connection.send_data data
     end
 
-    def open_backend_connection
-      @backend_connection = EM.connect @backend.name, @backend.port, CloudBalancer::LoadBalancer::TCPClient, self
-    end
-
-    def backend=(value)
-      @service.last_backend = value unless value.nil?
-      @backend = value.nil? ? value : @nodes[value]
-    end
-
     def unbind
       @backend_connection.close_connection_after_writing if @backend_connection
       @backend_connection = nil
+    end
+
+    def select_backend
+      @algorithm.backends = @service.nodes
+      @algorithm.options = @service.algo_options
+      @backend = @algorithm.get_backend
+      @service.algo_options = @algorithm.options_for_next_run
+    end
+
+    def open_backend_connection
+      @backend_connection = EM.connect @backend.name, @backend.port, CloudBalancer::LoadBalancer::TCPClient, self
     end
 
   end
