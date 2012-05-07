@@ -2,11 +2,15 @@ class CloudBalancer::LoadBalancer
 
   module TCPServer
 
-    def post_init(service, algorithm)
+    def initialize(service, algorithm)
       @service = service
       @nodes = service.nodes
       @port = service.port
       @algorithm = algorithm
+      super()
+    end
+
+    def post_init
       select_backend
       open_backend_connection
     end

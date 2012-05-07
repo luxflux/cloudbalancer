@@ -22,7 +22,7 @@ describe CloudBalancer::LoadBalancer::TCPServer do
   end
 
   before(:each) do
-    @tcp_server = TestTCPServer.new
+    @tcp_server = TestTCPServer.new(service, algorithm)
   end
 
   describe "#post_init" do
@@ -30,7 +30,7 @@ describe CloudBalancer::LoadBalancer::TCPServer do
       EM.expects(:connect).
         with('test1', 8080, CloudBalancer::LoadBalancer::TCPClient, instance_of(TestTCPServer)).
         returns(OpenStruct.new(close_connection_after_writing: true))
-      @tcp_server.post_init(service, algorithm)
+      @tcp_server.post_init
     end
 
     subject do
