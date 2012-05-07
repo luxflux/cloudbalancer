@@ -20,8 +20,6 @@ end
 
 # override the configuration
 CloudBalancer::Config.cluster_password = "testpass"
-CloudBalancer::Config.load_balancer.services = [ :www ]
+CloudBalancer::Config.load_balancer.services = [ { name: 'www', ip: "0.0.0.0", port: "8080", node_port: 3000 }  ]
 CloudBalancer::Config.amqp.host = "localhost"
-CloudBalancer::Config.daemon = :load_balancer
-CloudBalancer::Config.protocol = :AMQP
 

@@ -19,11 +19,11 @@ describe CloudBalancer::LoadBalancer do
       end
 
       let(:register_payload) do
-        { password: "testpass", services: [ "www", "smtp" ] }
+        { password: "testpass", services: { "www" => 80, "smtp" => 587 } }
       end
 
       it "adds the node to the setup" do
-        expect { subject.handle_message(metadata, register_payload) }.to change { subject.services[:www][:nodes].length }.from(0).to(1)
+        expect { subject.handle_message(metadata, register_payload) }.to change { subject.services.find_name(:www).nodes.length }.from(0).to(1)
       end
 
     end
@@ -39,7 +39,7 @@ describe CloudBalancer::LoadBalancer do
       end
 
       it "replies with the current services/servers to a status question" do
-        subject.transport.expects(:publish).with(:reply, {services: subject.services}, {reply_to: "uuid-queue"}).returns(true)
+        subject.transport.expects(:reply).with(metadata[:reply_to], metadata[:message_id], {services: subject.services}).returns(true)
         subject.handle_message(metadata, {}).should be_true
       end
 
