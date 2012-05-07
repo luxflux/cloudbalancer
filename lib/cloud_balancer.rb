@@ -1,3 +1,5 @@
+require 'ostruct'
+
 module CloudBalancer
 
   autoload :LoadBalancer, 'cloud_balancer/load_balancer'

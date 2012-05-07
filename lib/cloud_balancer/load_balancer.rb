@@ -20,7 +20,7 @@ module CloudBalancer
 
       @services = Services.new
       @config.services.each do |service|
-        @services << Service.new(service[:name], service[:ip], service[:port])
+        @services << Service.new(service[:name], service[:ip], service[:port], service[:algorithm])
       end
 
       @logger = CloudBalancer::Logger.new.logger
@@ -156,8 +156,15 @@ module CloudBalancer
     def start_loadbalancing
       @services.each do |service|
         @logger.info "Starting service #{service.name} on #{service.ip}:#{service.port}"
-        EM.start_server service.ip, service.port, TCPServer, service
+        EM.start_server service.ip, service.port, TCPServer, service, get_algo_for(service.algorithm)
       end
+    end
+
+    def get_algo_for(value)
+      case value.to_sym
+      when :wrr
+        Algorithms::WRR
+      end.new
     end
 
   end
