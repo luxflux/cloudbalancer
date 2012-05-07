@@ -1,37 +1,49 @@
 module CloudBalancer::LoadBalancer::Algorithms
-  module WRR
+  class WRR
 
-    class ErrorInCalculation < RuntimeError; end
+    attr_accessor :backends, :options
 
-    def select_backend
-      run_algorithm
+    def initialize
+      @backends = nil
+      self.options = OpenStruct.new(backend: -1, current_weight: 0)
     end
 
-    def run_algorithm
-      @last_backend ||= -1
-      @current_weight ||= 0
+    def options=(value)
+      return false unless value.respond_to?(:current_weight) and value.respond_to?(:backend)
+      @current_weight = value.current_weight
+      @backend = value.backend
+    end
+
+    def get_backend
       begin
-        algo
-      rescue ErrorInCalculation
+        return algorithm
+      rescue CloudBalancer::LoadBalancer::Algorithms::ErrorInCalculation
         retry
       end
     end
 
-    def algo
-      @new_backend = (@last_backend + 1) % @nodes.length
+    def options_for_next_run
+      OpenStruct.new(current_weight: @current_weight, backend: @backend)
+    end
 
-      if @new_backend == 0
-        @current_weight = @current_weight - @nodes.gcd
+
+    def algorithm
+      @backend = (@backend + 1) % @backends.length
+
+      if @backend == 0
+        @current_weight = @current_weight - @backends.gcd
         if @current_weight <= 0
-          @current_weight = @nodes.max
+          @current_weight = @backends.max
           if @current_weight == 0
             fail ErrorInCalculation
           end
         end
       end
 
-      if @nodes[@new_backend][:weight] >= @current_weight
-        self.backend = @new_backend
+      if @backends[@backend].weight >= @current_weight
+        @backends[@backend]
+      else
+        raise ErrorInCalculation
       end
 
     end
