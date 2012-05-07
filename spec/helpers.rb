@@ -9,7 +9,7 @@ module Helpers
 
     channel = mock
     channel.stubs(:topic).with('pub/sub', {:auto_delete => true}).returns(exchange)
-    channel.stubs(:queue).with("", :exclusive => true).returns(queue)
+    channel.stubs(:queue).with(instance_of(String), {exclusive: true, auto_delete: true}).returns(queue)
 
     ::AMQP.stubs(:connect).returns(true)
     ::AMQP::Channel.stubs(:new).returns(channel)

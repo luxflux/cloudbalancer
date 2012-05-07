@@ -2,7 +2,16 @@ require 'spec_helper'
 
 describe CloudBalancer::Transport::AMQP do
 
-  #include EventedSpec::EMSpec
+  let(:logger) do
+    l = mock()
+    l.stubs(:error)
+    l.stubs(:info)
+    l
+  end
+
+  let(:consumer) do
+    OpenStruct.new(logger: logger)
+  end
 
   context "as server" do
     before do
@@ -11,7 +20,7 @@ describe CloudBalancer::Transport::AMQP do
 
     subject do
       amqp = CloudBalancer::Transport::AMQP.new
-      amqp.consumer = CloudBalancer::LoadBalancer.new
+      amqp.consumer = consumer
       amqp.start
       amqp
     end
