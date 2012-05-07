@@ -1,5 +1,7 @@
 # CloudBalancer
 
+[![Build Status](https://secure.travis-ci.org/luxflux/cloudbalancer.png?branch=master)](http://travis-ci.org/luxflux/cloudbalancer)
+
 Ever wanted the servers behind your loadbalancer to register themself with
 the it? Ever wished your loadbalancer would react on high load or other
 events on the backend servers?
@@ -16,6 +18,19 @@ This project will solve your problems (as soon as its finished, haha...).
   - In the first version, there will be just generic TCP-relaying, soon
     after that there will be HTTP-Proxying
   - Primarily based on AMQP/RabbitMQ
+
+## Whats already implemented?
+  - Node check-in at the loadbalancer
+  - Monitoring the heartbeat of a node
+  - Simple TCP-Weighted-Round-Robin Loadbalancer
+  - Hacky start scripts for each
+  - Status-CLI which outputs some JSON :)
+
+## Open parts for the first RC
+  - Nice start scripts
+  - Nice CLI
+  - Plugin infrastructure for the weighting
+  - Live rebalancing when the weight of a node changes
 
 ## Planned features
   - Everything is a plugin
