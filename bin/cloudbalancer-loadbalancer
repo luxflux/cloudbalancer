@@ -11,6 +11,8 @@ require './config/config'
 require 'cloud_balancer'
 
 EM.run do
-  runner = CloudBalancer::Runner.new
-  runner.run!(:load_balancer)
+  daemon = CloudBalancer::LoadBalancer.new
+  transport = CloudBalancer::Transport::AMQP.new
+  runner = CloudBalancer::Runner.new(daemon, transport)
+  runner.run
 end
