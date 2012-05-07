@@ -1,27 +1,21 @@
 module CloudBalancer
   class Runner
 
-    attr_reader :protocol
-    attr_reader :worker
+    attr_reader :transport
+    attr_reader :daemon
 
-    def initialize
-      @protocol = CloudBalancer::Config.protocol
+    def initialize(daemon, transport)
+      @daemon = daemon
+      @transport = transport
     end
 
-    def run!(mode = :auto, &block)
-      @worker = "CloudBalancer::Transport::#{@protocol.to_s.camelize}".constantize.new
-      consumer = "CloudBalancer::#{(mode == :auto ? CloudBalancer::Config.daemon : mode).to_s.camelize}".constantize
+    def run
+      @daemon.transport = @transport
+      @transport.daemon = @daemon
 
-      if block
-        @worker.consumer = consumer.new(block)
-      else
-        @worker.consumer = consumer.new
-      end
-
-      @worker.consumer.transport = @worker
-
-      @worker.start
-      @worker.consumer.start
+      @transport.start
+      @daemon.start
+      true
     end
 
   end
