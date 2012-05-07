@@ -11,7 +11,7 @@ describe CloudBalancer::LoadBalancer::TCPServer do
   end
 
   let(:service) do
-    OpenStruct.new(nodes: [], port: 80, algorithm: algorithm)
+    OpenStruct.new(nodes: [], port: 80)
   end
 
   before(:all) do
@@ -30,7 +30,7 @@ describe CloudBalancer::LoadBalancer::TCPServer do
       EM.expects(:connect).
         with('test1', 8080, CloudBalancer::LoadBalancer::TCPClient, instance_of(TestTCPServer)).
         returns(OpenStruct.new(close_connection_after_writing: true))
-      @tcp_server.post_init(service)
+      @tcp_server.post_init(service, algorithm)
     end
 
     subject do
