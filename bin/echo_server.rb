@@ -17,5 +17,5 @@ end
 
 # Note that this will block current thread.
 EventMachine.run {
-  EventMachine.start_server "127.0.0.1", 3000, EchoServer
+  EventMachine.start_server "0.0.0.0", 3000, EchoServer
 }
