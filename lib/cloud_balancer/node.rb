@@ -10,7 +10,7 @@ module CloudBalancer
 
       @logger = CloudBalancer::Logger.new.logger
 
-      @name = Socket.gethostname
+      @name = @config.hostname
     end
 
     def start
