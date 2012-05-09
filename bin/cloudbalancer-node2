@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler'
+
+Bundler.require
+
+$: << 'lib'
+
+require './config/config'
+require 'cloud_balancer'
+
+configatron.services = [ { name: 'www', ip: '0.0.0.0', node_port: 3001 } ]
+configatron.hostname = 'localhost'
+
+EM.run do
+  daemon = CloudBalancer::Node.new
+  transport = CloudBalancer::Transport::AMQP.new
+  runner = CloudBalancer::Runner.new(daemon, transport)
+  runner.run
+end
