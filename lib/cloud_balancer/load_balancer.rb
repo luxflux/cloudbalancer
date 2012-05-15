@@ -28,7 +28,8 @@ module CloudBalancer
       @topics = [
         :register,
         :status,
-        :heartbeat
+        :heartbeat,
+        :weight
       ]
 
     end
@@ -61,6 +62,9 @@ module CloudBalancer
 
           when :heartbeat
             update_heartbeat(payload)
+
+          when :weight
+            @logger.info "Weight should be set to #{payload[:value]} now."
 
           else
             @logger.error "I don't know how to handle message of type #{metadata[:topic]} (Content: #{payload})."

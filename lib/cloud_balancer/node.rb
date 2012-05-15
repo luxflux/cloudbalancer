@@ -3,6 +3,8 @@ require 'socket'
 module CloudBalancer
   class Node
 
+    autoload :Checks, 'cloud_balancer/node/checks'
+
     attr_accessor :transport, :logger
 
     def initialize
@@ -11,11 +13,14 @@ module CloudBalancer
       @logger = CloudBalancer::Logger.new.logger
 
       @name = @config.hostname
+
+      @services = @config.services
     end
 
     def start
       register_with_loadbalancer
       start_heartbeat
+      start_checks
     end
 
     def register_with_loadbalancer
@@ -43,13 +48,27 @@ module CloudBalancer
       end
     end
 
+    def start_checks
+      EM::PeriodicTimer.new(3) do
+        @services.each do |service|
+          weights = service[:checks].map do |c|
+            check = "CloudBalancer::Node::Checks::#{c.capitalize}".constantize.new
+            check.run.weight
+          end
+          # average over all checks
+          weight = weights.inject(:+).to_f / weights.size
+          publish(:weight, value: weight, node: @name, service: service)
+        end
+      end
+    end
+
     def services_array
-      @config.services.map { |s| s[:name] }
+      @services.map { |s| s[:name] }
     end
 
     def reg_services
       services = {}
-      @config.services.each do |s|
+      @services.each do |s|
         services[s[:name]] = s[:node_port]
       end
       services
