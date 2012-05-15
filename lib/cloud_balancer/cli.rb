@@ -9,6 +9,12 @@ module CloudBalancer
       status = Status.new
       status.run
     end
+
+    def help(*args)
+      super
+      EM.stop
+    end
+
   end
 
 end
