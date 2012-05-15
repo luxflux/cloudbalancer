@@ -7,6 +7,7 @@ module CloudBalancer
   autoload :Transport, 'cloud_balancer/transport'
   autoload :Runner, 'cloud_balancer/runner'
   autoload :Node, 'cloud_balancer/node'
+  autoload :CLI, 'cloud_balancer/cli'
 
   autoload :Logger, 'cloud_balancer/logger'
   autoload :Status, 'cloud_balancer/status'
