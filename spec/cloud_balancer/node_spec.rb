@@ -3,7 +3,7 @@ require 'spec_helper'
 describe CloudBalancer::Node do
 
   before do
-    EM::PeriodicTimer.expects(:new).with(1).returns(true)
+    EM::PeriodicTimer.expects(:new).twice.with(instance_of(Fixnum)).returns(true)
     @node = CloudBalancer::Node.new
   end
 
