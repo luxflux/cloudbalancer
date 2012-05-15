@@ -1,0 +1,13 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler'
+
+Bundler.require
+
+$: << 'lib'
+
+require './config/config'
+require 'cloud_balancer'
+
+EM.run { CloudBalancer::CLI.start }
