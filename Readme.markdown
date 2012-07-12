@@ -1,6 +1,7 @@
 # CloudBalancer
 
 [![Build Status](https://secure.travis-ci.org/luxflux/cloudbalancer.png?branch=master)](http://travis-ci.org/luxflux/cloudbalancer)
+[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/luxflux/cloudbalancer)
 
 Ever wanted the servers behind your loadbalancer to register themself with
 the it? Ever wished your loadbalancer would react on high load or other
