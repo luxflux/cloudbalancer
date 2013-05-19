@@ -42,7 +42,7 @@ This project will solve your problems (as soon as its finished, haha...).
   - SMTP-Proxying
 
 
-# Giving the current version a try
+## Giving the current version a try
 
   * Install & start RabbitMQ
   * Start the loadbalancer:
