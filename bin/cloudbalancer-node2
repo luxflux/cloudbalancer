@@ -10,7 +10,7 @@ $: << 'lib'
 require './config/config'
 require 'cloud_balancer'
 
-configatron.services = [ { name: 'www', ip: '0.0.0.0', node_port: 3001 } ]
+configatron.services = [ { name: 'www', ip: '0.0.0.0', node_port: 3001, checks: ['load'] } ]
 configatron.hostname = 'localhost'
 
 EM.run do
