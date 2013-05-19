@@ -41,3 +41,28 @@ This project will solve your problems (as soon as its finished, haha...).
   - HTTP-Proxying (including Varnish-Cache?)
   - SMTP-Proxying
 
+
+# Giving the current version a try
+
+  * Install & start RabbitMQ
+  * Start the loadbalancer:
+```shell
+ruby bin/cloudbalancer-loadbalancer
+```
+
+  * Start the echo servers:
+```shell
+ruby bin/echo-server.rb
+ruby bin/echo-server2.rb
+```
+
+  * Start the nodes
+```shell
+ruby bin/cloudbalancer-node
+ruby bin/cloudbalancer-node2
+```
+  
+  * Connect to localhost:8080 with netcat
+```shell
+nc localhost 8080
+```
